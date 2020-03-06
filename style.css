@@ -1,0 +1,48 @@
+/*****************/
+/* control panel */
+/*****************/
+.panel {
+	background-color: yellow;
+	width: 50vw;
+	height: 20vh;
+    margin: auto;
+	display: flex;
+    justify-content: space-around;
+}
+input[type=number] {
+	width: 30px;
+}
+form {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: flex-end;
+}
+.clear-reset {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+/*****************/
+/* canvas */
+/*****************/
+.container {
+	position: relative;
+	width: 80vw;
+	height: 50vh;
+	margin: 100px auto;
+	text-align: center;
+}
+
+.row {
+	display: flex;
+	justify-content: center;
+}
+.box {
+	width: 20px;
+	height: 20px;
+	border: 1px solid grey;
+	background: none;	
+}
+

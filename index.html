@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pixel Art Maker</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="panel">
+		<form class="submit">
+			<label>Row<input type="number" name="row" value="10"></label>
+			<label>Column<input type="number" name="column" value="10"></label>
+			<button>Create grid</button>
+			<input type="color" name="box-color" value="#00ffff">
+		</form>
+		<div class="clear-reset">
+			<button class="clear">Clear grid</button>
+			<button class="reset">Reset grid</button>
+
+		</div>
+	</div>
+
+	<div class="container"></div>
+
+	<script>
+		const submit = document.querySelector('.submit');
+		const container = document.querySelector('.container');
+		const reset = document.querySelector('.reset');
+		const inputColor = document.querySelector('input[type=color]');
+		let newColor = "#00ffff";
+
+		function createGrid(row, column) {
+			let rows = [];
+			let columns = [];
+			for(let i = 1; i <= column; i++) {
+				columns.push(`
+					<div class="box" style="background: none;"></div>
+				`)
+			};
+			for(let j = 1; j <= row; j++) {
+				rows.push(`
+					<div class="row">${columns.join('')}</div>
+				`)
+			}
+			container.innerHTML = rows.join('');
+			const boxes = document.querySelectorAll('.box');
+			boxes.forEach(box => box.addEventListener('click', addColor));			
+		}
+
+		function handleCreate(e) {
+			e.preventDefault();
+			container.innerHTML = '';
+			const row = document.querySelector('input[name=row]').value;
+			const column = document.querySelector('input[name=column]').value;
+			createGrid(row, column);
+		}
+
+		function resetGrid() {
+			createGrid(10, 10);
+		}
+
+		function handleColor() {
+			newColor = `${inputColor.value}`;
+			// colors.forEach(color => {
+			// 	if(color.style.backgroundColor !== "none") {
+			// 		color.style.backgroundColor = newColor;	
+			// 	}
+			// })
+		}
+
+		function addColor(e) {
+			box = e.target;
+			console.log(box.style.background);
+			if(box.style.background === "none") {
+				box.style.background = newColor;				
+			} else {
+				box.style.background !== "none";
+				box.style.background = "none";
+			}			
+		}
+
+				
+		submit.addEventListener('submit', handleCreate);
+		reset.addEventListener('click', resetGrid);
+		inputColor.addEventListener('change', handleColor);
+		createGrid(10, 10);
+
+		//color wheel: if color changed, the existing color not changed
+		//clear button	
+	</script>
+</body>
+</html>
