@@ -33,10 +33,12 @@
 		const column = document.querySelector('input[name=column]')
 		//build the grid 
 		const submit = document.querySelector('.submit');
+		const clear = document.querySelector('.clear');
 		const reset = document.querySelector('.reset');
 		//color control
 		const inputColor = document.querySelector('input[type=color]');
 		const defaultColor = "#00ffff";
+		let boxes = [];
 		let newColor = defaultColor;	//initial value is default color
 		
 
@@ -55,7 +57,7 @@
 				`)
 			}
 			container.innerHTML = rows.join('');
-			const boxes = document.querySelectorAll('.box');
+			boxes = document.querySelectorAll('.box');
 			boxes.forEach(box => box.addEventListener('click', addColor));
 		}
 
@@ -71,7 +73,7 @@
 				const num = parseInt(row.value);
 				e.target.className.includes('minus') ? 
 					row.value = num - 1: 
-					row.value = num + 1;					 
+					row.value = num + 1;				 
 			} else {
 				const num = parseInt(column.value);
 				e.target.className.includes('minus') ? 
@@ -80,32 +82,37 @@
 			}										
 		}
 
-		function resetGrid() {
-			//reset color to defaultColor?
-			createGrid(10, 10);
+		function handleClear() {
+			boxes.forEach(box => {
+				box.style.background = "none";
+			})
 		}
 
-		function handleColor() {
-			newColor = inputColor.value;
+		function resetGrid() {
+			//reset color to defaultColor?
+			container.innerHTML = '';
+			row.value = 10;
+			column.value = 10;
 		}
 
 		function addColor(e) {
 			box = e.target;
 			if(box.style.background === "none") {
-				box.style.background = newColor;				
+				box.style.background = newColor;			
 			} else {
 				box.style.background !== "none";
 				box.style.background = "none";
 			}			
 		}
-
 				
 		submit.addEventListener('submit', handleCreate);
-		buttonGridChange.forEach(button => button.addEventListener('click', handleChangeGrid)); 
+		buttonGridChange.forEach(button => button.addEventListener('click', handleChangeGrid));
+		clear.addEventListener('click', handleClear);
 		reset.addEventListener('click', resetGrid);
-		inputColor.addEventListener('change', handleColor);
-		createGrid(10, 10);		
-		
+		inputColor.addEventListener('change', () => {
+			newColor = inputColor.value;
+		});
+				
 	</script>
 </body>
 </html>
