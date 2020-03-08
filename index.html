@@ -16,14 +16,13 @@
 			<input type="color" name="box-color" value="#00ffff">
 		</form>
 		<div class="clear-reset">
-			<!-- clear the marks on the grid and restart on existing grid  -->
 			<button class="clear">Clear grid</button>
 			<button class="reset">Reset grid</button>
 
 		</div>
 	</div>
 
-	<div class="container"></div>
+	<table class="container" cellspacing="0"></table>
 
 	<script>
 		const container = document.querySelector('.container');
@@ -39,35 +38,113 @@
 		const inputColor = document.querySelector('input[type=color]');
 		const defaultColor = "#00ffff";
 		let boxes = [];
-		let newColor = defaultColor;	//initial value is default color
+		let newColor = defaultColor;
+		let rowsDiff = 0;
+		let currentRows = 0;	
 		
-
-		//add new rows and column to the existing grid?
-		function createGrid(row, column) {
-			let columns = [];
-			let rows = [];
-			for(let i = 1; i <= column; i++) {
-				columns.push(`
-					<div class="box" style="background: none;"></div>
-				`)
-			};
-			for(let j = 1; j <= row; j++) {
-				rows.push(`
-					<div class="row">${columns.join('')}</div>
-				`)
+		function initialGrid(row, column) {
+			//build the grid
+			for(let r = 0; r < row; r++) {
+				//create tr each time 
+				tr = document.createElement('tr');
+				container.appendChild(tr);
+				for(let c = 0; c < column; c++) {
+					td = document.createElement('td');
+					container.childNodes[r].appendChild(td);					
+				}				
 			}
-			container.innerHTML = rows.join('');
-			boxes = document.querySelectorAll('.box');
-			boxes.forEach(box => box.addEventListener('click', addColor));
+			//add the event listener and property
+			boxes = document.querySelectorAll('td');
+			boxes.forEach(box => {
+				box.addEventListener('click', addColor);
+				box.style.background = "none";
+			});
+		}
+
+		function addRows(row, column) {
+			for(let r = 0; r < row; r++) {
+				tr = document.createElement('tr');
+				container.appendChild(tr);
+				for(let c = 0; c < column; c++) {
+					td = document.createElement('td');
+					//just add the column to the last row
+					container.lastChild.appendChild(td);					
+				}				
+			}
+
+			boxes = container.lastChild.querySelectorAll('td');
+			boxes.forEach(box => {
+				box.addEventListener('click', addColor);
+				box.style.background = "none";									
+			});			
+		}
+
+		function removeRows(row, column) {
+			for(let r = 0; r < row; r++) {
+				container.removeChild(container.lastChild);
+			}
+		}
+
+		function addColumns(row, column) {
+			for (let r = 0; r < row; r++) {
+				for(let c = 0; c < column; c++) {
+					td = document.createElement('td');
+					//add one coloumn to each row
+					container.childNodes[r].appendChild(td);				
+				}	
+			}
+			
+			for (let r = 0; r < row; r++) {
+				//last child of each row
+				let box = container.childNodes[r].lastChild;
+				box.addEventListener('click', addColor);
+				box.style.background = "none";									
+			}
+		}
+
+		function removeColumns(row, column) {
+			for (let r = 0; r < row; r++) {
+				//last child of each row
+				container.childNodes[r].removeChild(container.childNodes[r].lastChild);				
+			}
+		}
+
+		//main function to decide how to build/ change the grid
+		function createGrid(row, column) {
+			currentRows = container.childNodes.length;
+			rowsDiff = row - currentRows; //add
+			container.childNodes[0] === undefined? currentColumns = 0:
+				currentColumns = container.childNodes[0].childNodes.length;
+			columnsDiff = column - currentColumns; //add
+			//start with nothing
+			if(currentRows === 0 && currentColumns === 0) {
+				return initialGrid(row, column);
+			}
+			//row button is clicked only
+			if(rowsDiff !== 0 && columnsDiff === 0) {
+				if(rowsDiff > 0) {	//add row
+					return addRows(rowsDiff, column);		
+				} else {	//remove row
+				rowsDiff = Math.abs(rowsDiff);
+				return removeRows(rowsDiff, column);
+				}
+			}
+			//column button is clicked
+			if(rowsDiff === 0 && columnsDiff !== 0) {
+				if(columnsDiff > 0) { //add coloumn
+					return addColumns(row, columnsDiff);		
+				} else {	//remove column
+				columnsDiff = Math.abs(rowsDiff);
+				return removeColumns(row, columnsDiff);
+				}
+			}
 		}
 
 		function handleCreate(e) {
 			e.preventDefault();
-			//keep the grids and add new rows and columns
-			container.innerHTML = '';
 			createGrid(row.value, column.value);
 		}
-
+		//row or column buttons clicked
 		function handleChangeGrid(e) {
 			if(e.target.className.includes('row')) {
 				const num = parseInt(row.value);
@@ -83,6 +160,7 @@
 		}
 
 		function handleClear() {
+			boxes = document.querySelectorAll('td');
 			boxes.forEach(box => {
 				box.style.background = "none";
 			})
@@ -90,6 +168,7 @@
 
 		function resetGrid() {
 			container.innerHTML = '';
+			newColor = defaultColor;
 			inputColor.value = defaultColor;
 			row.value = 10;
 			column.value = 10;
