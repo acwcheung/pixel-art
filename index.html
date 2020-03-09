@@ -33,26 +33,21 @@
 
 		</div>
 	</div>
-
 	<table class="container" cellspacing="0"></table>
 
 	<script>
 		const container = document.querySelector('.container');
-		const gridChange = document.querySelectorAll('.grid-change');
 		//value from input fields
 		const row = document.querySelector('input[name=row]')
 		const column = document.querySelector('input[name=column]')
-		//build the grid 
-		const inputRow = document.querySelector('input[name=row]');
-		const inputColumn = document.querySelector('input[name=column]');
+		//buttons 
 		const btnCreateGrid = document.querySelector('.create-grid');
+		const gridChange = document.querySelectorAll('.grid-change');		
 		const clear = document.querySelector('.clear');
 		const reset = document.querySelector('.reset');
-		//color control
 		const inputColor = document.querySelector('input[type=color]');
+		//initial values 		
 		const defaultColor = "#00ffff";
-		//initial values 
-		let boxes = [];
 		let newColor = defaultColor;
 		let rowsDiff = 0;
 		let currentRows = 0;
@@ -65,14 +60,12 @@
 				container.appendChild(tr);
 				for(let c = 0; c < column; c++) {
 					td = document.createElement('td');
-					container.childNodes[r].appendChild(td);			
+					container.childNodes[r].appendChild(td);
+					let box = container.childNodes[r].childNodes[c];
+					box.addEventListener('click', addColor);
+					box.style.background = "none";				
 				}				
 			}
-			boxes = document.querySelectorAll('td');
-			boxes.forEach(box => {
-				box.addEventListener('click', addColor);
-				box.style.background = "none";
-			});
 		}
 
 		function addRows(row, column) {
@@ -169,7 +162,7 @@
 		}
 
 		function handleClear() {
-			boxes = document.querySelectorAll('td');
+			let boxes = document.querySelectorAll('td');
 			boxes.forEach(box => {
 				box.style.background = "none";
 			})
@@ -184,7 +177,7 @@
 		}
 
 		function addColor(e) {
-			box = e.target;
+			let box = e.target;
 			if(box.style.background === "none") {
 				box.style.background = newColor;			
 			} else {
@@ -194,9 +187,9 @@
 				
 		btnCreateGrid.addEventListener('click', () => 
 			createGrid(row.value, column.value));
-		inputRow.addEventListener('keypress', (e) => {
+		row.addEventListener('keypress', (e) => {
 			if(e.keyCode === 13) {createGrid(row.value, column.value)} });
-		inputColumn.addEventListener('keypress', (e) => {
+		column.addEventListener('keypress', (e) => {
 			if(e.keyCode === 13) {createGrid(row.value, column.value)} });
 		gridChange.forEach(button => button.addEventListener('click', handleGridChange));
 		clear.addEventListener('click', handleClear);
