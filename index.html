@@ -3,18 +3,30 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- what is this ? standard meta data?-->
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="description" content="A fun intuitive pixel art maker. Draw something!">
+	<meta name="keywords" content="art, draw, pixel, fun, frontend, front-end, front end, developer, web developer, web development, javascript">
+	<meta name="author" content="Ashley Cheung">
 	<title>Pixel Art Maker</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 	<div class="panel">
-		<form class="submit">
-		<!-- the buttons in the form clicked, submit event triggered -->
-			<div><label>Row</label><button class="row-minus change-grid">-</button><input type="number" name="row" value="10"><button class="row-add change-grid">+</button></div>
-			<div><label>Column</label><button class="column-minus change-grid">-</button><input type="number" name="column" value="10"><button class="column-add change-grid">+</button></div>  
-			<button>Create grid</button>
+		<div class="control">			
+			<label>Row
+				<button class="row-minus grid-change">-</button>
+				<input type="number" name="row" value="10" min="1" max="100">
+				<button class="row-add grid-change">+</button>
+			</label>			
+			<label>Column
+				<button class="column-minus grid-change">-</button>
+				<input type="number" name="column" value="10" min="1" max="100">
+				<button class="column-add grid-change">+</button>
+			</label>		  
+			<button class="create-grid">Create grid</button>
 			<input type="color" name="box-color" value="#00ffff">
-		</form>
+		</div>
 		<div class="clear-reset">
 			<button class="clear">Clear grid</button>
 			<button class="reset">Reset grid</button>
@@ -26,34 +38,36 @@
 
 	<script>
 		const container = document.querySelector('.container');
-		const buttonGridChange = document.querySelectorAll('.change-grid');
+		const gridChange = document.querySelectorAll('.grid-change');
 		//value from input fields
 		const row = document.querySelector('input[name=row]')
 		const column = document.querySelector('input[name=column]')
 		//build the grid 
-		const submit = document.querySelector('.submit');
+		const inputRow = document.querySelector('input[name=row]');
+		const inputColumn = document.querySelector('input[name=column]');
+		const btnCreateGrid = document.querySelector('.create-grid');
 		const clear = document.querySelector('.clear');
 		const reset = document.querySelector('.reset');
 		//color control
 		const inputColor = document.querySelector('input[type=color]');
 		const defaultColor = "#00ffff";
+		//initial values 
 		let boxes = [];
 		let newColor = defaultColor;
 		let rowsDiff = 0;
-		let currentRows = 0;	
+		let currentRows = 0;
+		let columnsDiff = 0;
+		let currentColumns = 0;		
 		
 		function initialGrid(row, column) {
-			//build the grid
 			for(let r = 0; r < row; r++) {
-				//create tr each time 
 				tr = document.createElement('tr');
 				container.appendChild(tr);
 				for(let c = 0; c < column; c++) {
 					td = document.createElement('td');
-					container.childNodes[r].appendChild(td);					
+					container.childNodes[r].appendChild(td);			
 				}				
 			}
-			//add the event listener and property
 			boxes = document.querySelectorAll('td');
 			boxes.forEach(box => {
 				box.addEventListener('click', addColor);
@@ -67,21 +81,19 @@
 				container.appendChild(tr);
 				for(let c = 0; c < column; c++) {
 					td = document.createElement('td');
-					//just add the column to the last row
-					container.lastChild.appendChild(td);					
+					let newRows = currentRows + r;
+					container.childNodes[newRows].appendChild(td);
+					let box = container.childNodes[newRows].childNodes[c]
+					box.addEventListener('click', addColor);
+					box.style.background = "none";
 				}				
-			}
-
-			boxes = container.lastChild.querySelectorAll('td');
-			boxes.forEach(box => {
-				box.addEventListener('click', addColor);
-				box.style.background = "none";									
-			});			
+			}						
 		}
 
 		function removeRows(row, column) {
 			for(let r = 0; r < row; r++) {
-				container.removeChild(container.lastChild);
+				let deleteRows = currentRows - 1 - r;
+				container.removeChild(container.childNodes[deleteRows]);
 			}
 		}
 
@@ -89,23 +101,22 @@
 			for (let r = 0; r < row; r++) {
 				for(let c = 0; c < column; c++) {
 					td = document.createElement('td');
-					//add one coloumn to each row
-					container.childNodes[r].appendChild(td);				
+					td = document.createElement('td');
+					container.childNodes[r].appendChild(td);
+					let newColumns = currentColumns + c
+					let box = container.childNodes[r].childNodes[newColumns];
+					box.addEventListener('click', addColor);
+					box.style.background = "none";			
 				}	
-			}
-			
-			for (let r = 0; r < row; r++) {
-				//last child of each row
-				let box = container.childNodes[r].lastChild;
-				box.addEventListener('click', addColor);
-				box.style.background = "none";									
-			}
+			}			
 		}
 
 		function removeColumns(row, column) {
 			for (let r = 0; r < row; r++) {
-				//last child of each row
-				container.childNodes[r].removeChild(container.childNodes[r].lastChild);				
+				for(let c = 0; c < column; c++) {
+					let deleteColumns = currentColumns - 1 - c;
+					container.childNodes[r].removeChild(container.childNodes[r].childNodes[deleteColumns]);	
+				}				
 			}
 		}
 
@@ -134,28 +145,26 @@
 				if(columnsDiff > 0) { //add coloumn
 					return addColumns(row, columnsDiff);		
 				} else {	//remove column
-				columnsDiff = Math.abs(rowsDiff);
+				columnsDiff = Math.abs(columnsDiff);
 				return removeColumns(row, columnsDiff);
 				}
 			}
 		}
 
-		function handleCreate(e) {
-			e.preventDefault();
-			createGrid(row.value, column.value);
-		}
 		//row or column buttons clicked
-		function handleChangeGrid(e) {
+		function handleGridChange(e) {
 			if(e.target.className.includes('row')) {
 				const num = parseInt(row.value);
 				e.target.className.includes('minus') ? 
-					row.value = num - 1: 
-					row.value = num + 1;				 
+					row.value = Math.max(num - 1, 1): 
+					row.value = Math.min(num + 1, 100);
+				createGrid(row.value, column.value); 	
 			} else {
 				const num = parseInt(column.value);
 				e.target.className.includes('minus') ? 
-					column.value = num - 1: 
-					column.value = num + 1; 	
+					column.value = Math.max(num - 1, 1): 
+					column.value = Math.min(num + 1, 100); 	
+				createGrid(row.value, column.value); 	
 			}										
 		}
 
@@ -179,13 +188,17 @@
 			if(box.style.background === "none") {
 				box.style.background = newColor;			
 			} else {
-				box.style.background !== "none";
 				box.style.background = "none";
 			}			
 		}
 				
-		submit.addEventListener('submit', handleCreate);
-		buttonGridChange.forEach(button => button.addEventListener('click', handleChangeGrid));
+		btnCreateGrid.addEventListener('click', () => 
+			createGrid(row.value, column.value));
+		inputRow.addEventListener('keypress', (e) => {
+			if(e.keyCode === 13) {createGrid(row.value, column.value)} });
+		inputColumn.addEventListener('keypress', (e) => {
+			if(e.keyCode === 13) {createGrid(row.value, column.value)} });
+		gridChange.forEach(button => button.addEventListener('click', handleGridChange));
 		clear.addEventListener('click', handleClear);
 		reset.addEventListener('click', resetGrid);
 		inputColor.addEventListener('change', () => {
