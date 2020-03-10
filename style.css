@@ -1,16 +1,39 @@
+body {
+	background: rgba(0, 0, 0, 0.7) url("pixelbg.jpg");
+	background-blend-mode: overlay;
+	background-position: top;
+	font-family: 'Slabo 27px', serif;
+	color: white;
+}
+h1 {
+	text-align: center;
+	word-spacing: 10px;
+	letter-spacing: 3px;
+	font-size: 50px;
+}
+
 /*****************/
 /* control panel */
 /*****************/
 .panel {
-	background-color: yellow;
-	width: 50vw;
+	width: 400px;
 	height: 20vh;
     margin: auto;
 	display: flex;
     justify-content: space-around;
+    font-size: 20px;
 }
 input[type=number] {
-	width: 30px;
+	width: 50px;
+	height: 30px;
+	font-size: 20px;
+	background-color: black;
+	color: white;
+	border: 1px solid lightgrey;
+	border-radius: 5px;
+	text-align: center;
+    padding: 0 0 0 10px;
+    margin: 0 5px;
 }
 .control {
 	display: flex;
@@ -18,20 +41,47 @@ input[type=number] {
 	justify-content: space-around;
 	align-items: flex-end;
 }
-.control input[type=number] {
-	text-align: right;
-    padding: 0 0 0 5px;
-}
-.clear-reset {
+.grid-buttons {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
+}
+label {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+button.grid-change:first-child {
+	margin-left: 15px;
+}
+button.grid-change {
+	font-size: 20px;
+	font-family: 'Slabo 27px', serif;
+	background-color: black;
+	color: white;
+	width: 30px;
+	height: 30px;
+	border-radius: 5px;
+	border: solid 1px white;
+}
+.grid-buttons button {
+	box-sizing: content-box;
+	font-size: 20px;
+	font-family: 'Slabo 27px', serif;
+	background-color: black;
+	color: white;
+	height: 30px;
+	border-radius: 5px;
+	border: solid 1px white;	
+	padding: 0px 15px;
 }
 
 /*****************/
 /* canvas */
 /*****************/
 .container {
+	background-color: white;
+/*	padding: 50px;*/
 	position: relative;
 	margin: 100px auto;	
 }
@@ -41,4 +91,6 @@ td {
 	border: 1px solid grey;
 	background: none;	
 }
+
+
 

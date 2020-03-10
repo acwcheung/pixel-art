@@ -10,8 +10,10 @@
 	<meta name="author" content="Ashley Cheung">
 	<title>Pixel Art Maker</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
 </head>
 <body>
+	<h1>Pixel Art Maker</h1>
 	<div class="panel">
 		<div class="control">			
 			<label>Row
@@ -24,16 +26,16 @@
 				<input type="number" name="column" value="10" min="1" max="100">
 				<button class="column-add grid-change">+</button>
 			</label>		  
-			<button class="create-grid">Create grid</button>
 			<input type="color" name="box-color" value="#00ffff">
 		</div>
-		<div class="clear-reset">
+		<div class="grid-buttons">
+			<button class="create-grid">Create grid</button>
 			<button class="clear">Clear grid</button>
 			<button class="reset">Reset grid</button>
 
 		</div>
 	</div>
-	<table class="container" cellspacing="0"></table>
+	<table class="container" cellspacing="0"></table>	
 
 	<script>
 		const container = document.querySelector('.container');
@@ -41,8 +43,8 @@
 		const row = document.querySelector('input[name=row]')
 		const column = document.querySelector('input[name=column]')
 		//buttons 
-		const btnCreateGrid = document.querySelector('.create-grid');
 		const gridChange = document.querySelectorAll('.grid-change');		
+		const btnCreateGrid = document.querySelector('.create-grid');		
 		const clear = document.querySelector('.clear');
 		const reset = document.querySelector('.reset');
 		const inputColor = document.querySelector('input[type=color]');
